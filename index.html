@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Iridescence FMS Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iridescence FMS Pro</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   
   <style>
+    /* --- STYLES --- */
     body { font-family: 'Poppins', sans-serif; background-color: #030014; color: #ffffff; overflow-x: hidden; }
+    
+    /* Iridescent Background */
     .iridescent-bg {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: radial-gradient(circle at 10% 20%, rgba(88, 28, 135, 0.6) 0%, transparent 40%),
@@ -19,30 +23,34 @@
       filter: blur(40px); z-index: -2; animation: bgShift 15s infinite alternate;
     }
     @keyframes bgShift { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+    /* UI Components */
     .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); border-radius: 16px; }
     .glass-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
     .glass-input:focus { border-color: #d946ef; box-shadow: 0 0 10px rgba(217, 70, 239, 0.3); outline: none; }
     .text-gradient { background: linear-gradient(to right, #c084fc, #e879f9, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .btn-primary { background: linear-gradient(135deg, #9333ea, #db2777); transition: transform 0.2s, box-shadow 0.2s; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(219, 39, 119, 0.5); }
+    
+    /* File Colors */
     .border-l-thick { border-left-width: 5px; }
     .type-Pink { border-color: #ec4899; }
     .type-Brown { border-color: #a16207; }
     .type-White { border-color: #f3f4f6; }
     .type-Register { border-color: #3b82f6; }
     .type-Custom { border-color: #8b5cf6; }
-    .fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
-    .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+    /* Utilities */
     .slide-up { animation: slideUp 0.5s ease-out forwards; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
     ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
   </style>
 </head>
 <body>
   <div class="iridescent-bg"></div>
+  
   <div id="app" class="min-h-screen flex flex-col relative z-10 text-sm md:text-base">
     
     <transition name="fade">
@@ -51,73 +59,71 @@
         <span class="font-medium">{{ notification.message }}</span>
       </div>
     </transition>
+
     <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 backdrop-blur-sm">
       <div class="flex flex-col items-center">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-fuchsia-500"></div>
-        <p class="mt-4 text-fuchsia-300 font-bold tracking-widest animate-pulse">PROCESSING</p>
+        <p class="mt-4 text-fuchsia-300 font-bold tracking-widest animate-pulse">CONNECTING</p>
       </div>
     </div>
 
     <div v-if="currentPage === 'login'" class="flex-grow flex items-center justify-center p-4">
-      <div class="glass-card p-10 rounded-3xl w-full max-w-md slide-up relative overflow-hidden">
-        <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500 rounded-full blur-3xl opacity-20"></div>
-        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-cyan-500 rounded-full blur-3xl opacity-20"></div>
+      <div class="glass-card p-10 rounded-3xl w-full max-w-md slide-up relative">
         <div class="text-center mb-8">
           <h1 class="text-4xl font-extrabold text-gradient mb-2">IRIS SYSTEM</h1>
           <p class="text-gray-400 text-xs tracking-widest uppercase">Cloud Based API</p>
         </div>
+        
         <div class="flex bg-black bg-opacity-40 rounded-full p-1 mb-8 relative">
           <div class="w-1/2 h-full absolute bg-gray-700 rounded-full transition-all duration-300 opacity-50" :style="{ left: authMode === 'login' ? '0%' : '50%' }"></div>
-          <button @click="authMode = 'login'" class="flex-1 py-2 text-center rounded-full relative z-10 font-medium transition" :class="authMode === 'login' ? 'text-white' : 'text-gray-400'">Login</button>
-          <button @click="authMode = 'signup'" class="flex-1 py-2 text-center rounded-full relative z-10 font-medium transition" :class="authMode === 'signup' ? 'text-white' : 'text-gray-400'">Sign Up</button>
+          <button @click="authMode = 'login'" class="flex-1 py-2 text-center rounded-full relative z-10 font-medium transition text-white">Login</button>
+          <button @click="authMode = 'signup'" class="flex-1 py-2 text-center rounded-full relative z-10 font-medium transition text-white">Sign Up</button>
         </div>
+
         <form @submit.prevent="handleAuth">
           <div v-if="authMode === 'signup'" class="mb-5 slide-up">
-            <label class="block text-xs text-gray-400 mb-1 ml-1">USERNAME</label>
-            <div class="relative"><i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.name" type="text" placeholder="Create a username" class="w-full pl-10 p-3 rounded-xl glass-input" required></div>
+            <div class="relative"><i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.name" type="text" placeholder="Username" class="w-full pl-10 p-3 rounded-xl glass-input" required></div>
           </div>
-          <div class="mb-5 slide-up" :style="{ animationDelay: '0.1s' }">
-            <label class="block text-xs text-gray-400 mb-1 ml-1">{{ authMode === 'login' ? 'USERNAME OR EMAIL' : 'EMAIL ADDRESS' }}</label>
-            <div class="relative"><i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.email" type="text" :placeholder="authMode === 'login' ? 'admin' : 'user@example.com'" class="w-full pl-10 p-3 rounded-xl glass-input" required></div>
+          <div class="mb-5 slide-up">
+            <div class="relative"><i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.email" type="text" placeholder="Email / ID" class="w-full pl-10 p-3 rounded-xl glass-input" required></div>
           </div>
-          <div class="mb-8 slide-up" :style="{ animationDelay: '0.2s' }">
-            <label class="block text-xs text-gray-400 mb-1 ml-1">PASSWORD</label>
-            <div class="relative"><i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.password" type="password" placeholder="••••••••" class="w-full pl-10 p-3 rounded-xl glass-input" required></div>
+          <div class="mb-8 slide-up">
+            <div class="relative"><i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.password" type="password" placeholder="Password" class="w-full pl-10 p-3 rounded-xl glass-input" required></div>
           </div>
-          <button type="submit" class="w-full py-4 btn-primary rounded-xl font-bold text-white shadow-lg tracking-wide uppercase slide-up" :style="{ animationDelay: '0.3s' }">
-            {{ authMode === 'login' ? 'Access Dashboard' : 'Request Account' }} <i class="fa-solid fa-arrow-right ml-2"></i>
+          <button type="submit" class="w-full py-4 btn-primary rounded-xl font-bold text-white shadow-lg uppercase slide-up">
+            {{ authMode === 'login' ? 'Enter Dashboard' : 'Request Access' }}
           </button>
         </form>
       </div>
     </div>
 
     <div v-else class="flex h-screen overflow-hidden">
-      <aside class="w-20 md:w-64 glass-card m-4 mr-0 flex flex-col justify-between hidden md:flex animate-fade-in-left">
+      <aside class="w-20 md:w-64 glass-card m-4 mr-0 flex flex-col justify-between hidden md:flex">
         <div>
           <div class="p-6 border-b border-gray-700 border-opacity-30">
             <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 hidden md:block">IRIS</h2>
-            <div class="text-xs text-gray-500 mt-1 hidden md:block">User: {{ user.name }}</div>
+            <div class="text-xs text-gray-500 mt-1 hidden md:block">Hi, {{ user.name }}</div>
           </div>
           <nav class="p-4 space-y-3">
-            <button @click="currentView = 'explorer'" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'explorer' ? 'bg-purple-600 bg-opacity-30 text-white shadow-lg border border-purple-500 border-opacity-30' : 'text-gray-400 hover:text-white hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-folder-tree text-lg w-6 text-center"></i> <span class="hidden md:inline font-medium">Explorer</span></button>
-            <button @click="currentView = 'create'" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'create' ? 'bg-purple-600 bg-opacity-30 text-white shadow-lg border border-purple-500 border-opacity-30' : 'text-gray-400 hover:text-white hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-circle-plus text-lg w-6 text-center"></i> <span class="hidden md:inline font-medium">New File</span></button>
-            <button v-if="user.role === 'Admin'" @click="fetchAdminData" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'admin' ? 'bg-purple-600 bg-opacity-30 text-white shadow-lg border border-purple-500 border-opacity-30' : 'text-gray-400 hover:text-white hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-shield-halved text-lg w-6 text-center"></i> <span class="hidden md:inline font-medium">Admin</span></button>
+            <button @click="currentView = 'explorer'" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'explorer' ? 'bg-purple-600 bg-opacity-30' : 'text-gray-400 hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-folder-tree text-lg w-6 text-center"></i> <span class="hidden md:inline">Explorer</span></button>
+            <button @click="currentView = 'create'" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'create' ? 'bg-purple-600 bg-opacity-30' : 'text-gray-400 hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-circle-plus text-lg w-6 text-center"></i> <span class="hidden md:inline">New File</span></button>
+            <button v-if="user.role === 'Admin'" @click="fetchAdminData" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'admin' ? 'bg-purple-600 bg-opacity-30' : 'text-gray-400 hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-shield-halved text-lg w-6 text-center"></i> <span class="hidden md:inline">Admin</span></button>
           </nav>
         </div>
-        <div class="p-4"><button @click="logout" class="w-full p-3 text-red-400 bg-red-900 bg-opacity-10 rounded-xl hover:bg-opacity-30 transition border border-red-900 border-opacity-30 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="hidden md:inline">Logout</span></button></div>
+        <div class="p-4"><button @click="logout" class="w-full p-3 text-red-400 bg-red-900 bg-opacity-10 rounded-xl hover:bg-opacity-30 transition flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="hidden md:inline">Logout</span></button></div>
       </aside>
 
       <main class="flex-1 overflow-y-auto p-4 md:p-6 relative">
-         <div class="md:hidden glass-card p-4 rounded-xl mb-6 flex justify-between items-center sticky top-0 z-40">
+        <div class="md:hidden glass-card p-4 rounded-xl mb-6 flex justify-between items-center sticky top-0 z-40">
           <span class="font-bold text-gradient">IRIS FMS</span>
           <div class="flex gap-4 text-xl"><i @click="currentView = 'explorer'" class="fa-solid fa-folder text-purple-400"></i><i @click="currentView = 'create'" class="fa-solid fa-plus text-pink-400"></i><i @click="logout" class="fa-solid fa-power-off text-red-400"></i></div>
         </div>
 
         <div class="mb-6 glass-card p-3 rounded-2xl flex items-center gap-4 sticky top-0 md:top-0 z-30 shadow-2xl">
           <div class="pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></div>
-          <input v-model="searchQuery" type="text" placeholder="Quick Search (ID, Name, Desc)..." class="bg-transparent w-full p-2 text-white outline-none placeholder-gray-500">
+          <input v-model="searchQuery" type="text" placeholder="Search files, ID, description..." class="bg-transparent w-full p-2 text-white outline-none">
           <select v-model="searchFilter" class="bg-transparent text-sm text-gray-300 outline-none pr-4 cursor-pointer">
-            <option value="all" class="bg-gray-900">All</option>
+            <option value="all" class="bg-gray-900">All Types</option>
             <option value="Pink File" class="bg-gray-900">Pink</option>
             <option value="Brown File" class="bg-gray-900">Brown</option>
             <option value="Register" class="bg-gray-900">Register</option>
@@ -130,15 +136,22 @@
                <div class="flex-1 cursor-pointer" @click="expandFile(file)">
                   <div class="flex items-center gap-3 mb-1">
                     <span class="text-xs font-mono bg-black bg-opacity-40 px-2 py-1 rounded text-gray-300">{{ file.FileNo }}</span>
-                    <span :class="`text-xs px-2 py-1 rounded-full ${file.Status === 'Active' ? 'bg-green-500 bg-opacity-20 text-green-400' : 'bg-red-500 bg-opacity-20 text-red-400'}`">● {{ file.Status }}</span>
+                    <span :class="`text-xs px-2 py-1 rounded-full ${file.Status === 'Active' ? 'text-green-400 bg-green-900' : 'text-red-400 bg-red-900'} bg-opacity-30`">● {{ file.Status }}</span>
                   </div>
                   <h3 class="font-bold text-xl text-white">{{ file.Name }}</h3>
-                  <p class="text-sm text-gray-400 mt-1 line-clamp-2">{{ file.Description }}</p>
+                  <p class="text-sm text-gray-400 mt-1">{{ file.Description }}</p>
+                  <div class="flex gap-2 mt-2 text-xs text-gray-500">
+                    <span class="bg-gray-800 px-2 py-1 rounded"><i class="fa-solid fa-location-dot"></i> {{ file.Location }}</span>
+                  </div>
                </div>
-               <div class="flex gap-3"><a v-if="file.AttachmentURL" :href="file.AttachmentURL" target="_blank" class="w-10 h-10 rounded-full bg-blue-600 bg-opacity-20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-paperclip"></i></a></div>
+               <div class="flex gap-3">
+                 <a v-if="file.AttachmentURL" :href="file.AttachmentURL" target="_blank" class="w-10 h-10 rounded-full bg-blue-600 bg-opacity-20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-paperclip"></i></a>
+                 <a :href="`https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${file.FileID}`" target="_blank" class="w-10 h-10 rounded-full bg-white bg-opacity-10 flex items-center justify-center text-white"><i class="fa-solid fa-qrcode"></i></a>
+               </div>
              </div>
-             <div v-if="file.expanded" class="mt-6 pt-4 border-t border-gray-700 border-opacity-50">
-               <div class="text-xs uppercase tracking-widest text-gray-500 mb-3 font-bold">Contents</div>
+             
+             <div v-if="file.expanded" class="mt-4 pt-4 border-t border-gray-700 border-opacity-50">
+               <div class="text-xs font-bold text-gray-500 mb-2 uppercase">Contents</div>
                <div v-for="sub in getSubFiles(file.FileID)" class="p-3 bg-black bg-opacity-40 rounded-lg flex justify-between items-center mb-2">
                   <div><div class="font-medium text-sm">{{ sub.Name }}</div><div class="text-xs text-gray-500">{{ sub.Type }}</div></div>
                   <a v-if="sub.AttachmentURL" :href="sub.AttachmentURL" target="_blank" class="text-blue-400 text-xs">View</a>
@@ -150,50 +163,58 @@
 
         <div v-if="currentView === 'create'" class="slide-up">
           <div class="glass-card p-8 rounded-2xl max-w-4xl mx-auto border border-gray-700">
-            <h2 class="text-2xl font-bold mb-8 text-gradient">Create New Record</h2>
+            <h2 class="text-2xl font-bold mb-8 text-gradient">Create Record</h2>
             <form @submit.prevent="submitFile" class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <select v-model="fileForm.category" class="w-full p-3 rounded-xl glass-input"><option>File</option><option>Sub-File</option><option>Custom</option></select>
                 <select v-model="fileForm.type" class="w-full p-3 rounded-xl glass-input"><option value="Pink File">Pink File</option><option value="Brown File">Brown File</option><option value="White Backing">White Backing</option><option value="Register">Register</option><option value="Custom">Custom</option></select>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <input v-model="fileForm.fileNo" type="text" class="w-full p-3 rounded-xl glass-input" required placeholder="Unique ID">
-                 <input v-model="fileForm.fileNameText" type="text" class="w-full p-3 rounded-xl glass-input" required placeholder="Title">
+                 <input v-model="fileForm.fileNo" type="text" class="w-full p-3 rounded-xl glass-input" required placeholder="File No (Unique)">
+                 <input v-model="fileForm.fileNameText" type="text" class="w-full p-3 rounded-xl glass-input" required placeholder="File Title">
               </div>
               <textarea v-model="fileForm.desc" class="w-full p-3 rounded-xl glass-input h-24" placeholder="Description..."></textarea>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <select v-model="fileForm.location" class="w-full p-3 rounded-xl glass-input"><option v-for="loc in dbData.locations" :value="loc">{{ loc }}</option></select>
-                <input v-model="fileForm.pageCount" type="number" class="w-full p-3 rounded-xl glass-input" placeholder="Pages">
+                <input v-model="fileForm.pageCount" type="number" class="w-full p-3 rounded-xl glass-input" placeholder="Page Count">
                 <select v-model="fileForm.status" class="w-full p-3 rounded-xl glass-input"><option>Active</option><option>Archived</option></select>
               </div>
-              <div class="p-6 border border-dashed border-gray-600 rounded-xl bg-black bg-opacity-20 text-center relative">
+              <div class="p-6 border border-dashed border-gray-600 rounded-xl bg-black bg-opacity-20 text-center relative hover:bg-opacity-40 transition">
                 <input type="file" @change="handleFileUpload" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer">
+                <i class="fa-solid fa-cloud-arrow-up text-2xl mb-2 text-gray-400"></i>
                 <p class="text-gray-300 text-sm">{{ fileForm.fileName || 'Click to Upload Document' }}</p>
               </div>
-              <div class="flex gap-4 pt-4"><button type="button" @click="currentView='explorer'" class="w-1/3 py-3 rounded-xl border border-gray-600">Cancel</button><button type="submit" class="w-2/3 py-3 btn-primary rounded-xl font-bold">Save Record</button></div>
+              <div class="flex gap-4 pt-4"><button type="button" @click="currentView='explorer'" class="w-1/3 py-3 rounded-xl border border-gray-600">Cancel</button><button type="submit" class="w-2/3 py-3 btn-primary rounded-xl font-bold">Save</button></div>
             </form>
           </div>
         </div>
-        
+
         <div v-if="currentView === 'admin'" class="slide-up">
            <h2 class="text-2xl font-bold mb-6">Admin Panel</h2>
            <div class="glass-card p-6 rounded-xl overflow-x-auto mb-6">
              <table class="w-full text-left text-sm whitespace-nowrap"><thead class="text-gray-500 border-b border-gray-700"><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
-               <tbody class="divide-y divide-gray-800"><tr v-for="u in adminUsers" :key="u.id"><td class="py-3">{{ u.name }}</td><td class="text-gray-400">{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.status }}</td><td><button v-if="u.status === 'Pending'" @click="changeUserStatus(u.rowIndex, 'Active')" class="text-green-400">Approve</button></td></tr></tbody>
+               <tbody class="divide-y divide-gray-800"><tr v-for="u in adminUsers" :key="u.id"><td class="py-3">{{ u.name }}</td><td class="text-gray-400">{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.status }}</td><td><button v-if="u.status === 'Pending'" @click="changeUserStatus(u.rowIndex, 'Active')" class="text-green-400 font-bold">Approve</button></td></tr></tbody>
              </table>
            </div>
-           <div class="glass-card p-6 rounded-xl flex gap-2"><input v-model="newLoc.name" placeholder="Loc Name" class="glass-input p-2 rounded-xl"><input v-model="newLoc.row" placeholder="Row" class="glass-input p-2 rounded-xl"><input v-model="newLoc.col" placeholder="Col" class="glass-input p-2 rounded-xl"><button @click="addLocation" class="btn-primary px-4 rounded-xl">Add</button></div>
+           <div class="glass-card p-6 rounded-xl">
+             <h3 class="font-bold mb-4">Add Inventory Location</h3>
+             <div class="flex gap-2"><input v-model="newLoc.name" placeholder="Name (A1)" class="glass-input p-2 rounded-xl flex-1"><input v-model="newLoc.row" placeholder="Row" class="glass-input p-2 rounded-xl w-24"><input v-model="newLoc.col" placeholder="Col" class="glass-input p-2 rounded-xl w-24"><button @click="addLocation" class="btn-primary px-4 rounded-xl">Add</button></div>
+           </div>
          </div>
-
       </main>
     </div>
   </div>
 
   <script>
-    // ********* CONFIGURATION **********
-    const API_URL = "https://script.google.com/macros/s/AKfycbztKV4wNCtPRRG-UEAuzBVtfW7gwOlFiB_xRBA1iDjV0RZvoYgYWct7hhzTH03nurjs/exec"; 
-    // Isko upar wale step me mile URL se replace karna!
-    // **********************************
+    /**
+     * ==========================================
+     * ⚙️ FRONTEND CONFIGURATION (FILL THIS)
+     * ==========================================
+     */
+    // Step 3: Cloudflare Worker Deploy karne ke baad jo URL milega, use yahan paste karo.
+    const API_URL = "https://calm-mud-e3f8.clickworld.workers.dev"; 
+    
+    /** ========================================== */
 
     const { createApp } = Vue;
     createApp({
@@ -211,7 +232,9 @@
           if (!this.dbData.files) return [];
           return this.dbData.files.filter(f => {
             const q = this.searchQuery.toLowerCase();
-            return (f.Name.toLowerCase().includes(q) || f.FileNo.toLowerCase().includes(q)) && (this.searchFilter === 'all' || f.Type === this.searchFilter) && f.Category !== 'Sub-File';
+            const matchesSearch = (f.Name || '').toLowerCase().includes(q) || (f.FileNo || '').toLowerCase().includes(q) || (f.Description || '').toLowerCase().includes(q);
+            const matchesType = this.searchFilter === 'all' || f.Type === this.searchFilter;
+            return matchesSearch && matchesType && f.Category !== 'Sub-File';
           });
         }
       },
@@ -219,9 +242,9 @@
         async apiCall(action, payload = {}) {
           this.loading = true;
           try {
-            // Using fetch with POST to send data securely
             const response = await fetch(API_URL, {
               method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ action, payload })
             });
             const data = await response.json();
@@ -229,23 +252,22 @@
             return data;
           } catch (e) {
             this.loading = false;
-            this.showNotify("Network Error: " + e.message, 'error');
+            this.showNotify("Connection Error. Check URL.", 'error');
             return { success: false };
           }
         },
         async handleAuth() {
           const payload = this.authMode === 'signup' ? { name: this.authForm.name, email: this.authForm.email, password: this.authForm.password } : { email: this.authForm.email, password: this.authForm.password };
-          const res = await this.apiCall(this.authMode, payload);
-          if (res.success) {
-            if (this.authMode === 'login') {
-              this.user = res.user;
-              this.currentPage = 'dashboard';
-              this.loadDashboardData();
-            } else {
-              this.showNotify('Wait for Admin approval.', 'success');
-              this.authMode = 'login';
-            }
-          } else { this.showNotify(res.message, 'error'); }
+          const res = await this.apiCall('login', payload); // For signup we use separate flow
+          
+          if (this.authMode === 'signup') {
+             const signRes = await this.apiCall('signup', payload);
+             if(signRes.success) { this.showNotify('Requested! Wait for Approval.', 'success'); this.authMode = 'login'; }
+             else this.showNotify('Error signing up', 'error');
+          } else {
+             if (res.success) { this.user = res.user; this.currentPage = 'dashboard'; this.loadDashboardData(); } 
+             else { this.showNotify(res.message, 'error'); }
+          }
         },
         async loadDashboardData() {
           const res = await this.apiCall('getDashboard');
@@ -254,36 +276,29 @@
         async submitFile() {
           const res = await this.apiCall('createFile', { form: this.fileForm, user: this.user });
           if(res.success) {
-             this.showNotify('Saved!', 'success');
+             this.showNotify('File Saved!', 'success');
              this.fileForm = { category: 'File', type: 'Pink File', fileNo: '', fileNameText: '', location: '', pageCount: 0, status: 'Active', fileData:null, fileName:null, desc: '' };
              this.loadDashboardData();
              this.currentView = 'explorer';
-          }
+          } else { this.showNotify('Save Failed', 'error'); }
         },
-        // Helpers
-        handleFileUpload(e) { const f = e.target.files[0]; if(f) { const r = new FileReader(); r.onload=(ev)=>{ this.fileForm.fileData=ev.target.result.split(',')[1]; this.fileForm.mimeType=f.type; this.fileForm.fileName=f.name; }; r.readAsDataURL(f); } },
-        getFileColorClass(t) { return t === 'Pink File' ? 'type-Pink' : t === 'Brown File' ? 'type-Brown' : 'type-Custom'; },
+        handleFileUpload(e) { 
+           const f = e.target.files[0]; 
+           if(f) { 
+             const r = new FileReader(); 
+             r.onload=(ev)=>{ this.fileForm.fileData=ev.target.result.split(',')[1]; this.fileForm.mimeType=f.type; this.fileForm.fileName=f.name; }; 
+             r.readAsDataURL(f); 
+           } 
+        },
+        getFileColorClass(t) { return t === 'Pink File' ? 'type-Pink' : t === 'Brown File' ? 'type-Brown' : t === 'Register' ? 'type-Register' : t === 'White Backing' ? 'type-White' : 'type-Custom'; },
         expandFile(f) { f.expanded = !f.expanded; },
         getSubFiles(pid) { return this.dbData.files.filter(f => f.ParentFileID === pid); },
-        prepareAddSubFile(p) { this.fileForm.category = 'Sub-File'; this.fileForm.parentFileId = p.FileID; this.currentView='create'; },
+        prepareAddSubFile(p) { this.fileForm.category = 'Sub-File'; this.fileForm.parentFileId = p.FileID; this.fileForm.location = p.Location; this.currentView='create'; },
         logout() { this.user = null; this.currentPage = 'login'; },
         showNotify(m, t) { this.notification = { message: m, type: t }; setTimeout(() => this.notification = null, 4000); },
-        
-        // Admin Methods
-        async fetchAdminData() { 
-          this.currentView = 'admin'; 
-          const res = await this.apiCall('getUsers'); 
-          if(res.success) this.adminUsers = res.data; 
-        },
-        async changeUserStatus(idx, status) {
-          await this.apiCall('updateUserStatus', { rowIndex: idx, status: status });
-          this.fetchAdminData();
-        },
-        async addLocation() {
-          await this.apiCall('addLocation', this.newLoc);
-          this.showNotify('Location Added', 'success');
-          this.loadDashboardData();
-        }
+        async fetchAdminData() { this.currentView = 'admin'; const res = await this.apiCall('getUsers'); if(res.success) this.adminUsers = res.data; },
+        async changeUserStatus(idx, status) { await this.apiCall('updateUserStatus', { rowIndex: idx, status: status }); this.fetchAdminData(); },
+        async addLocation() { await this.apiCall('addLocation', this.newLoc); this.showNotify('Added!', 'success'); this.loadDashboardData(); }
       }
     }).mount('#app');
   </script>
