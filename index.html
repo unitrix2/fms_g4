@@ -3,289 +3,330 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Iridescence FMS Pro</title>
+  <title>Aurora FMS | Enterprise</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   
   <style>
-    body { font-family: 'Poppins', sans-serif; background-color: #030014; color: #ffffff; overflow-x: hidden; }
-    .iridescent-bg {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(circle at 10% 20%, rgba(88, 28, 135, 0.6) 0%, transparent 40%),
-                  radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.5) 0%, transparent 40%),
-                  radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.4) 0%, transparent 50%);
-      filter: blur(40px); z-index: -2; animation: bgShift 15s infinite alternate;
+    /* --- AURORA THEME --- */
+    body { font-family: 'Inter', sans-serif; background-color: #000; color: white; overflow-x: hidden; }
+    
+    .aurora-bg {
+      position: fixed; inset: 0; z-index: -1;
+      background: linear-gradient(125deg, #000000 0%, #1a0b2e 50%, #000000 100%);
     }
-    @keyframes bgShift { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-    .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); border-radius: 16px; }
-    .glass-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
-    .glass-input:focus { border-color: #d946ef; box-shadow: 0 0 10px rgba(217, 70, 239, 0.3); outline: none; }
-    .text-gradient { background: linear-gradient(to right, #c084fc, #e879f9, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .btn-primary { background: linear-gradient(135deg, #9333ea, #db2777); transition: transform 0.2s, box-shadow 0.2s; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(219, 39, 119, 0.5); }
-    .border-l-thick { border-left-width: 5px; }
-    .type-Pink { border-color: #ec4899; }
-    .type-Brown { border-color: #a16207; }
-    .type-White { border-color: #f3f4f6; }
-    .type-Register { border-color: #3b82f6; }
-    .type-Custom { border-color: #8b5cf6; }
-    .slide-up { animation: slideUp 0.5s ease-out forwards; }
+    .aurora-orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6;
+      animation: float 10s infinite ease-in-out;
+    }
+    .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #6d28d9; animation-delay: 0s; }
+    .orb-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: #db2777; animation-delay: -5s; }
+    .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: #2563eb; animation-delay: -2s; opacity: 0.4; }
+
+    @keyframes float { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px, -30px); } }
+
+    /* Glass Components */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+    .glass-input {
+      background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white; transition: 0.3s;
+    }
+    .glass-input:focus { border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); outline: none; }
+    
+    .btn-gradient {
+      background: linear-gradient(135deg, #7c3aed, #db2777);
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(219, 39, 119, 0.6); }
+    
+    /* Utilities */
+    .text-glow { text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+    .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Search Suggestions Dropdown */
-    .suggestion-item:hover { background: rgba(255, 255, 255, 0.1); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
   </style>
 </head>
 <body>
-  <div class="iridescent-bg"></div>
+  <div class="aurora-bg"><div class="aurora-orb orb-1"></div><div class="aurora-orb orb-2"></div><div class="aurora-orb orb-3"></div></div>
   
   <div id="app" class="min-h-screen flex flex-col relative z-10 text-sm md:text-base">
     
-    <transition name="fade">
-      <div v-if="notification" :class="`fixed top-5 right-5 px-6 py-4 rounded-xl shadow-2xl glass-card border-l-4 z-50 flex items-center gap-3 ${notification.type === 'error' ? 'border-red-500' : 'border-green-400'}`">
-        <i :class="notification.type === 'error' ? 'fa-solid fa-circle-exclamation text-red-500' : 'fa-solid fa-check-circle text-green-400'"></i> <span class="font-medium">{{ notification.message }}</span>
-      </div>
-    </transition>
-    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 backdrop-blur-sm">
-      <div class="flex flex-col items-center"><div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-fuchsia-500"></div><p class="mt-4 text-fuchsia-300 font-bold tracking-widest animate-pulse">PROCESSING</p></div>
+    <transition name="fade"><div v-if="notify" :class="`fixed top-6 right-6 px-6 py-4 rounded-xl shadow-2xl glass-panel border-l-4 z-50 flex items-center gap-3 slide-up ${notify.type==='error'?'border-red-500':'border-emerald-400'}`"><i :class="notify.type==='error'?'fa-solid fa-circle-exclamation text-red-500':'fa-solid fa-check-circle text-emerald-400'"></i><span class="font-medium tracking-wide">{{ notify.msg }}</span></div></transition>
+
+    <div v-if="loading" class="fixed inset-0 bg-black/80 flex flex-col justify-center items-center z-[60] backdrop-blur-md">
+       <div class="w-16 h-16 border-t-4 border-b-4 border-fuchsia-500 rounded-full animate-spin"></div>
+       <div class="mt-4 text-fuchsia-400 font-bold tracking-[0.2em] animate-pulse">SYSTEM SYNCING</div>
     </div>
 
-    <div v-if="currentPage === 'login'" class="flex-grow flex items-center justify-center p-4">
-      <div class="glass-card p-10 rounded-3xl w-full max-w-md slide-up relative">
-        <div class="text-center mb-8"><h1 class="text-4xl font-extrabold text-gradient mb-2">IRIS SYSTEM</h1><p class="text-gray-400 text-xs tracking-widest uppercase">Cloud Based API</p></div>
-        <div class="flex bg-black bg-opacity-40 rounded-full p-1 mb-8 relative">
-          <div class="w-1/2 h-full absolute bg-gray-700 rounded-full transition-all duration-300 opacity-50" :style="{ left: authMode === 'login' ? '0%' : '50%' }"></div>
-          <button @click="authMode = 'login'" class="flex-1 py-2 rounded-full relative z-10 text-white">Login</button>
-          <button @click="authMode = 'signup'" class="flex-1 py-2 rounded-full relative z-10 text-white">Sign Up</button>
+    <div v-if="page === 'login'" class="flex-grow flex items-center justify-center p-4">
+      <div class="glass-panel p-10 rounded-3xl w-full max-w-md slide-up">
+        <div class="text-center mb-10">
+          <h1 class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400 mb-2">AURORA</h1>
+          <p class="text-gray-400 text-xs tracking-[0.3em] uppercase">Secure Enterprise FMS</p>
         </div>
-        <form @submit.prevent="handleAuth">
-          <div v-if="authMode === 'signup'" class="mb-5 slide-up"><div class="relative"><i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.name" type="text" placeholder="Username" class="w-full pl-10 p-3 rounded-xl glass-input" required></div></div>
-          <div class="mb-5 slide-up"><div class="relative"><i class="fa-solid fa-envelope absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.email" type="text" placeholder="Email / ID" class="w-full pl-10 p-3 rounded-xl glass-input" required></div></div>
-          <div class="mb-8 slide-up"><div class="relative"><i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-500"></i><input v-model="authForm.password" type="password" placeholder="Password" class="w-full pl-10 p-3 rounded-xl glass-input" required></div></div>
-          <button type="submit" class="w-full py-4 btn-primary rounded-xl font-bold text-white shadow-lg uppercase slide-up">{{ authMode === 'login' ? 'Enter Dashboard' : 'Request Access' }}</button>
+        
+        <div class="flex bg-black/40 rounded-full p-1 mb-8">
+          <button @click="authMode='login'" :class="`flex-1 py-2.5 rounded-full text-sm font-medium transition ${authMode==='login'?'bg-gray-700 text-white shadow-lg':'text-gray-400 hover:text-white'}`">Login</button>
+          <button @click="authMode='signup'" :class="`flex-1 py-2.5 rounded-full text-sm font-medium transition ${authMode==='signup'?'bg-gray-700 text-white shadow-lg':'text-gray-400 hover:text-white'}`">Request Access</button>
+        </div>
+
+        <form @submit.prevent="auth">
+          <div v-if="authMode==='signup'" class="mb-5 space-y-1"><label class="text-xs text-gray-500 ml-1">FULL NAME</label><input v-model="authForm.name" class="glass-input w-full p-3.5 rounded-xl" required></div>
+          <div class="mb-5 space-y-1"><label class="text-xs text-gray-500 ml-1">EMAIL ID</label><input v-model="authForm.email" class="glass-input w-full p-3.5 rounded-xl" required></div>
+          <div class="mb-8 space-y-1"><label class="text-xs text-gray-500 ml-1">PASSWORD</label><input type="password" v-model="authForm.password" class="glass-input w-full p-3.5 rounded-xl" required></div>
+          <button class="w-full py-4 btn-gradient rounded-xl font-bold text-white tracking-widest uppercase shadow-lg">{{ authMode==='login'?'Authenticate':'Submit Request' }}</button>
         </form>
       </div>
     </div>
 
     <div v-else class="flex h-screen overflow-hidden">
-      <aside class="w-20 md:w-64 glass-card m-4 mr-0 flex flex-col justify-between hidden md:flex">
-        <div>
-          <div class="p-6 border-b border-gray-700 border-opacity-30"><h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 hidden md:block">IRIS</h2><div class="text-xs text-gray-500 mt-1 hidden md:block">{{ user.name }} ({{ user.role }})</div></div>
-          <nav class="p-4 space-y-3">
-            <button @click="currentView = 'explorer'" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'explorer' ? 'bg-purple-600 bg-opacity-30' : 'text-gray-400 hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-folder-tree text-lg w-6 text-center"></i> <span class="hidden md:inline">Explorer</span></button>
-            <button @click="currentView = 'create'" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'create' ? 'bg-purple-600 bg-opacity-30' : 'text-gray-400 hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-circle-plus text-lg w-6 text-center"></i> <span class="hidden md:inline">New File</span></button>
-            <button v-if="user.role === 'Admin'" @click="fetchAdminData" :class="`w-full text-left p-3 rounded-xl flex items-center gap-4 transition ${currentView === 'admin' ? 'bg-purple-600 bg-opacity-30' : 'text-gray-400 hover:bg-white hover:bg-opacity-5'}`"><i class="fa-solid fa-shield-halved text-lg w-6 text-center"></i> <span class="hidden md:inline">Admin</span></button>
-          </nav>
+      <aside class="w-64 glass-panel m-4 mr-0 rounded-2xl flex flex-col hidden md:flex">
+        <div class="p-8 border-b border-white/10">
+          <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-400">AURORA</h2>
+          <div class="flex items-center gap-2 mt-2">
+            <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+            <span class="text-xs text-gray-400">{{ user.name }}</span>
+          </div>
         </div>
-        <div class="p-4"><button @click="logout" class="w-full p-3 text-red-400 bg-red-900 bg-opacity-10 rounded-xl hover:bg-opacity-30 transition flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="hidden md:inline">Logout</span></button></div>
+        <nav class="p-4 space-y-2 flex-1">
+          <a @click="view='explorer'" :class="`block p-4 rounded-xl cursor-pointer transition flex items-center gap-4 ${view==='explorer'?'bg-white/10 text-white border border-white/10':'text-gray-400 hover:bg-white/5 hover:text-white'}`"><i class="fa-solid fa-hard-drive w-6"></i> Files</a>
+          <a @click="initCreate()" :class="`block p-4 rounded-xl cursor-pointer transition flex items-center gap-4 ${view==='create'?'bg-white/10 text-white border border-white/10':'text-gray-400 hover:bg-white/5 hover:text-white'}`"><i class="fa-solid fa-plus-circle w-6"></i> Create</a>
+          <a v-if="user.role==='Admin'" @click="fetchAdmin" :class="`block p-4 rounded-xl cursor-pointer transition flex items-center gap-4 ${view==='admin'?'bg-white/10 text-white border border-white/10':'text-gray-400 hover:bg-white/5 hover:text-white'}`"><i class="fa-solid fa-shield-cat w-6"></i> Admin</a>
+        </nav>
+        <div class="p-4"><button @click="logout" class="w-full p-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/20 transition flex items-center justify-center gap-2"><i class="fa-solid fa-power-off"></i> Logout</button></div>
       </aside>
 
-      <main class="flex-1 overflow-y-auto p-4 md:p-6 relative">
-        <div class="md:hidden glass-card p-4 rounded-xl mb-6 flex justify-between items-center sticky top-0 z-40">
-          <span class="font-bold text-gradient">IRIS FMS</span>
-          <div class="flex gap-4 text-xl"><i @click="currentView = 'explorer'" class="fa-solid fa-folder text-purple-400"></i><i @click="currentView = 'create'" class="fa-solid fa-plus text-pink-400"></i><i @click="logout" class="fa-solid fa-power-off text-red-400"></i></div>
-        </div>
-
-        <div class="mb-6 relative z-30">
-          <div class="glass-card p-3 rounded-2xl flex items-center gap-4 shadow-2xl relative z-40">
-            <div class="pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></div>
-            <input v-model="searchQuery" type="text" placeholder="Search (Type ID, Name, or Description)..." class="bg-transparent w-full p-2 text-white outline-none" @focus="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 200)">
-            <select v-model="searchFilter" class="bg-transparent text-sm text-gray-300 outline-none pr-4 cursor-pointer">
-              <option value="all" class="bg-gray-900">All Types</option>
-              <option value="Pink File" class="bg-gray-900">Pink</option>
-              <option value="Brown File" class="bg-gray-900">Brown</option>
-              <option value="Register" class="bg-gray-900">Register</option>
-            </select>
-          </div>
-
-          <div v-if="searchQuery && showSuggestions && filteredFiles.length > 0" class="absolute top-full left-0 w-full mt-2 glass-card overflow-hidden z-30 max-h-60 overflow-y-auto border border-purple-500 border-opacity-30">
-            <div v-for="file in filteredFiles.slice(0, 10)" :key="file.FileID" @click="selectSuggestion(file)" class="suggestion-item p-3 cursor-pointer border-b border-gray-700 border-opacity-50 flex justify-between items-center transition">
-               <div>
-                 <div class="font-bold text-white text-sm">{{ file.Name }}</div>
-                 <div class="text-xs text-gray-400">{{ file.FileNo }} • {{ file.Type }}</div>
-               </div>
-               <div class="text-xs bg-gray-800 px-2 py-1 rounded">{{ file.Location }}</div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="currentView === 'explorer'" class="slide-up pb-20">
-           <div v-for="file in filteredFiles" :key="file.FileID" :id="'file-'+file.FileID" :class="`glass-card p-5 relative mb-4 border-l-thick ${getFileColorClass(file.Type)} ${file.highlight ? 'ring-2 ring-purple-500' : ''}`">
-             <div class="flex flex-col md:flex-row justify-between md:items-start gap-4">
-               <div class="flex-1 cursor-pointer" @click="expandFile(file)">
-                  <div class="flex items-center gap-3 mb-1">
-                    <span class="text-xs font-mono bg-black bg-opacity-40 px-2 py-1 rounded text-gray-300">{{ file.FileNo }}</span>
-                    <span :class="`text-xs px-2 py-1 rounded-full ${file.Status === 'Active' ? 'text-green-400 bg-green-900' : 'text-red-400 bg-red-900'} bg-opacity-30`">● {{ file.Status }}</span>
-                  </div>
-                  <h3 class="font-bold text-xl text-white">{{ file.Name }}</h3>
-                  <p class="text-sm text-gray-400 mt-1">{{ file.Description }}</p>
-               </div>
-               <div class="flex gap-3">
-                 <a v-if="file.AttachmentURL" :href="file.AttachmentURL" target="_blank" class="w-10 h-10 rounded-full bg-blue-600 bg-opacity-20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-paperclip"></i></a>
-               </div>
-             </div>
-             <div v-if="file.expanded" class="mt-4 pt-4 border-t border-gray-700 border-opacity-50">
-               <div class="text-xs font-bold text-gray-500 mb-2 uppercase">Contents</div>
-               <div v-for="sub in getSubFiles(file.FileID)" class="p-3 bg-black bg-opacity-40 rounded-lg flex justify-between items-center mb-2">
-                  <div><div class="font-medium text-sm">{{ sub.Name }}</div><div class="text-xs text-gray-500">{{ sub.Type }}</div></div>
-                  <a v-if="sub.AttachmentURL" :href="sub.AttachmentURL" target="_blank" class="text-blue-400 text-xs">View</a>
-               </div>
-               <button class="mt-2 text-xs text-purple-300" @click="prepareAddSubFile(file)">+ Add Document Inside</button>
+      <main class="flex-1 overflow-y-auto p-4 md:p-6">
+        
+        <div class="glass-panel p-2 rounded-2xl flex items-center gap-4 mb-6 sticky top-0 z-40">
+          <div class="pl-4 text-gray-400"><i class="fa-solid fa-search"></i></div>
+          <input v-model="search" type="text" placeholder="Global Search..." class="bg-transparent w-full p-3 text-white outline-none" @focus="showSugg=true" @blur="setTimeout(()=>showSugg=false,200)">
+           <div v-if="search && showSugg" class="absolute top-16 left-0 w-full glass-panel rounded-xl overflow-hidden z-50">
+             <div v-for="f in filteredFiles.slice(0,5)" @click="openFile(f)" class="p-3 hover:bg-white/10 cursor-pointer border-b border-white/5 flex justify-between">
+               <span>{{ f.Name }}</span> <span class="text-xs text-gray-500">{{ f.FileNo }}</span>
              </div>
            </div>
         </div>
 
-        <div v-if="currentView === 'create'" class="slide-up">
-          <div class="glass-card p-8 rounded-2xl max-w-4xl mx-auto border border-gray-700">
-            <h2 class="text-2xl font-bold mb-8 text-gradient">Create Record</h2>
-            <form @submit.prevent="submitFile" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <select v-model="fileForm.category" class="w-full p-3 rounded-xl glass-input"><option>File</option><option>Sub-File</option><option>Custom</option></select>
-                <select v-model="fileForm.type" class="w-full p-3 rounded-xl glass-input"><option value="Pink File">Pink File</option><option value="Brown File">Brown File</option><option value="White Backing">White Backing</option><option value="Register">Register</option><option value="Custom">Custom</option></select>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <input v-model="fileForm.fileNo" type="text" class="w-full p-3 rounded-xl glass-input" required placeholder="File No (Unique)">
-                 <input v-model="fileForm.fileNameText" type="text" class="w-full p-3 rounded-xl glass-input" required placeholder="File Title">
-              </div>
-              <textarea v-model="fileForm.desc" class="w-full p-3 rounded-xl glass-input h-24" placeholder="Description..."></textarea>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <select v-model="fileForm.location" class="w-full p-3 rounded-xl glass-input"><option v-for="loc in dbData.locations" :value="loc">{{ loc }}</option></select>
-                <input v-model="fileForm.pageCount" type="number" class="w-full p-3 rounded-xl glass-input" placeholder="Page Count">
-                <select v-model="fileForm.status" class="w-full p-3 rounded-xl glass-input"><option>Active</option><option>Archived</option></select>
-              </div>
-              <div class="p-6 border border-dashed border-gray-600 rounded-xl bg-black bg-opacity-20 text-center relative">
-                <input type="file" @change="handleFileUpload" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer">
-                <i class="fa-solid fa-cloud-arrow-up text-2xl mb-2 text-gray-400"></i><p class="text-gray-300 text-sm">{{ fileForm.fileName || 'Click to Upload' }}</p>
-              </div>
-              <div class="flex gap-4 pt-4"><button type="button" @click="currentView='explorer'" class="w-1/3 py-3 rounded-xl border border-gray-600">Cancel</button><button type="submit" class="w-2/3 py-3 btn-primary rounded-xl font-bold">Save</button></div>
-            </form>
-          </div>
+        <div v-if="view==='explorer'" class="slide-up">
+           <div class="grid gap-4">
+             <div v-for="f in filteredFiles" :key="f.FileID" :class="`glass-panel p-6 relative border-l-4 transition hover:bg-white/5 ${getColor(f.Type)}`">
+                <div class="flex justify-between items-start">
+                   <div class="flex-1 cursor-pointer" @click="f.expand=!f.expand">
+                      <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-mono bg-black/50 px-2 py-1 rounded text-gray-300 border border-white/10">{{ f.FileNo }}</span>
+                        <span :class="`text-xs px-2 py-1 rounded-full ${f.Status==='Active'?'bg-emerald-500/20 text-emerald-400':'bg-red-500/20 text-red-400'}`">● {{ f.Status }}</span>
+                      </div>
+                      <h3 class="text-xl font-bold text-white mb-1">{{ f.Name }}</h3>
+                      <p class="text-sm text-gray-400 line-clamp-1">{{ f.Description }}</p>
+                   </div>
+                   <div class="flex gap-2">
+                      <button @click="editFile(f)" class="p-2 w-8 h-8 rounded-full bg-white/5 hover:bg-white/20 text-blue-400"><i class="fa-solid fa-pen"></i></button>
+                      <button v-if="user.role==='Admin'" @click="deleteFile(f)" class="p-2 w-8 h-8 rounded-full bg-white/5 hover:bg-red-500/20 text-red-400"><i class="fa-solid fa-trash"></i></button>
+                      <a v-if="f.AttachmentURL" :href="f.AttachmentURL" target="_blank" class="p-2 w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center"><i class="fa-solid fa-paperclip"></i></a>
+                   </div>
+                </div>
+                <div v-if="f.expand" class="mt-4 pt-4 border-t border-white/10">
+                   <div class="text-xs font-bold text-gray-500 mb-2">CONTENTS</div>
+                   <div v-for="sub in subFiles(f.FileID)" class="p-3 bg-black/30 rounded-lg flex justify-between mb-2">
+                      <span class="text-sm">{{ sub.Name }}</span>
+                      <a v-if="sub.AttachmentURL" :href="sub.AttachmentURL" target="_blank" class="text-blue-400 text-xs">View</a>
+                   </div>
+                   <button @click="initCreate(f)" class="mt-2 text-xs text-fuchsia-400 hover:text-fuchsia-300">+ Add Document Inside</button>
+                </div>
+             </div>
+           </div>
         </div>
 
-        <div v-if="currentView === 'admin'" class="slide-up">
-           <div class="flex justify-between items-center mb-6">
-             <h2 class="text-2xl font-bold">Admin Panel</h2>
-             <button @click="showUserModal = true" class="btn-primary px-4 py-2 rounded-xl text-sm font-bold"><i class="fa-solid fa-user-plus"></i> Create User</button>
-           </div>
-           
-           <div class="glass-card p-6 rounded-xl overflow-x-auto mb-6">
-             <table class="w-full text-left text-sm whitespace-nowrap"><thead class="text-gray-500 border-b border-gray-700"><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
-               <tbody class="divide-y divide-gray-800"><tr v-for="u in adminUsers" :key="u.id"><td class="py-3">{{ u.name }}</td><td class="text-gray-400">{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.status }}</td><td><button v-if="u.status === 'Pending'" @click="changeUserStatus(u.rowIndex, 'Active')" class="text-green-400 font-bold">Approve</button></td></tr></tbody>
-             </table>
-           </div>
-           <div class="glass-card p-6 rounded-xl">
-             <h3 class="font-bold mb-4">Add Inventory Location</h3>
-             <div class="flex gap-2"><input v-model="newLoc.name" placeholder="Name" class="glass-input p-2 rounded-xl flex-1"><input v-model="newLoc.row" placeholder="Row" class="glass-input p-2 rounded-xl w-24"><input v-model="newLoc.col" placeholder="Col" class="glass-input p-2 rounded-xl w-24"><button @click="addLocation" class="btn-primary px-4 rounded-xl">Add</button></div>
-           </div>
-         </div>
+        <div v-if="view==='create' || view==='edit'" class="slide-up">
+           <div class="glass-panel p-8 rounded-2xl max-w-4xl mx-auto">
+             <h2 class="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-pink-400">{{ view==='edit' ? 'Edit File' : 'Create New Record' }}</h2>
+             <form @submit.prevent="saveFile" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                   <div class="space-y-2"><label class="text-xs text-gray-400">Category</label><select v-model="form.category" class="glass-input w-full p-3 rounded-xl"><option>File</option><option>Sub-File</option><option>Custom</option></select></div>
+                   <div class="space-y-2"><label class="text-xs text-gray-400">Type</label><select v-model="form.type" class="glass-input w-full p-3 rounded-xl"><option>Pink File</option><option>Brown File</option><option>White Backing</option><option>Register</option></select></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                   <div class="space-y-2"><label class="text-xs text-gray-400">File No</label><input v-model="form.fileNo" class="glass-input w-full p-3 rounded-xl" required></div>
+                   <div class="space-y-2"><label class="text-xs text-gray-400">Title</label><input v-model="form.fileNameText" class="glass-input w-full p-3 rounded-xl" required></div>
+                </div>
+                <div class="space-y-2"><label class="text-xs text-gray-400">Description</label><textarea v-model="form.desc" class="glass-input w-full p-3 rounded-xl h-24"></textarea></div>
+                <div class="grid md:grid-cols-3 gap-6">
+                   <div class="space-y-2"><label class="text-xs text-gray-400">Location</label><select v-model="form.location" class="glass-input w-full p-3 rounded-xl"><option v-for="l in db.locations" :value="l">{{ l }}</option></select></div>
+                   <div class="space-y-2"><label class="text-xs text-gray-400">Pages</label><input v-model="form.pageCount" type="number" class="glass-input w-full p-3 rounded-xl"></div>
+                   <div class="space-y-2"><label class="text-xs text-gray-400">Status</label><select v-model="form.status" class="glass-input w-full p-3 rounded-xl"><option>Active</option><option>Archived</option><option>Deleted</option></select></div>
+                </div>
+                
+                <div v-if="view==='create'" class="p-8 border-2 border-dashed border-gray-600 rounded-2xl text-center hover:bg-white/5 cursor-pointer relative transition">
+                   <input type="file" @change="upload" class="absolute inset-0 opacity-0 cursor-pointer">
+                   <i class="fa-solid fa-cloud-upload text-3xl text-gray-500 mb-2"></i>
+                   <p class="text-gray-400 text-sm">{{ form.fileName || 'Upload Document' }}</p>
+                </div>
 
-         <div v-if="showUserModal" class="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-           <div class="glass-card p-8 rounded-2xl w-full max-w-md slide-up">
-             <h3 class="text-xl font-bold mb-4">Create New User</h3>
-             <form @submit.prevent="createAdminUser" class="space-y-4">
-               <input v-model="newUserForm.name" placeholder="Full Name" class="glass-input w-full p-3 rounded-xl" required>
-               <input v-model="newUserForm.email" placeholder="Email" class="glass-input w-full p-3 rounded-xl" required>
-               <input v-model="newUserForm.password" placeholder="Password" class="glass-input w-full p-3 rounded-xl" required>
-               <select v-model="newUserForm.role" class="glass-input w-full p-3 rounded-xl">
-                 <option value="Manager">Manager</option>
-                 <option value="Admin">Admin</option>
-               </select>
-               <div class="flex gap-3 mt-4">
-                 <button type="button" @click="showUserModal = false" class="w-1/2 p-3 rounded-xl border border-gray-600">Cancel</button>
-                 <button type="submit" class="w-1/2 p-3 btn-primary rounded-xl font-bold">Create</button>
-               </div>
+                <div class="flex gap-4">
+                   <button type="button" @click="view='explorer'" class="w-1/3 py-3 rounded-xl border border-gray-600 hover:bg-white/10">Cancel</button>
+                   <button class="w-2/3 py-3 btn-gradient rounded-xl font-bold">{{ view==='edit' ? 'Update' : 'Save Record' }}</button>
+                </div>
              </form>
            </div>
-         </div>
+        </div>
+
+        <div v-if="view==='admin'" class="slide-up">
+           <div class="flex gap-4 mb-6 overflow-x-auto pb-2">
+              <div class="glass-panel p-4 rounded-xl min-w-[150px]"><div class="text-3xl font-bold text-violet-400">{{ db.stats.total }}</div><div class="text-xs text-gray-500 uppercase">Total Files</div></div>
+              <div class="glass-panel p-4 rounded-xl min-w-[150px]"><div class="text-3xl font-bold text-emerald-400">{{ db.stats.active }}</div><div class="text-xs text-gray-500 uppercase">Active</div></div>
+           </div>
+
+           <div class="glass-panel p-6 rounded-2xl mb-8">
+              <div class="flex justify-between items-center mb-6">
+                 <h3 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-users text-pink-400"></i> User Management</h3>
+                 <button @click="openUserModal('create')" class="px-4 py-2 bg-pink-600 rounded-lg text-xs font-bold hover:bg-pink-500">Add User</button>
+              </div>
+              <div class="overflow-x-auto">
+                 <table class="w-full text-left text-sm">
+                    <thead class="text-gray-500 border-b border-white/10"><tr><th class="py-3">Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody class="divide-y divide-white/5">
+                       <tr v-for="u in adminUsers" :key="u.email" class="hover:bg-white/5">
+                          <td class="py-3">{{ u.name }}</td><td class="text-gray-400">{{ u.email }}</td>
+                          <td><span class="bg-white/10 px-2 py-1 rounded text-xs">{{ u.role }}</span></td>
+                          <td><span :class="`px-2 py-1 rounded text-xs ${u.status==='Active'?'text-emerald-400':'text-yellow-400'}`">{{ u.status }}</span></td>
+                          <td>
+                             <button @click="openUserModal('edit', u)" class="text-blue-400 mr-3 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                             <button @click="deleteUser(u)" class="text-red-400 hover:text-white"><i class="fa-solid fa-trash"></i></button>
+                          </td>
+                       </tr>
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+
+           <div class="glass-panel p-6 rounded-2xl">
+              <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-list-ul text-blue-400"></i> Audit Logs</h3>
+              <div class="h-64 overflow-y-auto space-y-2 pr-2">
+                 <div v-for="l in db.logs" class="p-3 bg-black/30 rounded-lg flex justify-between text-xs border border-white/5">
+                    <span class="text-gray-400">{{ new Date(l[0]).toLocaleString() }}</span>
+                    <span class="text-fuchsia-400 font-bold">{{ l[1] }}</span>
+                    <span class="text-blue-300">{{ l[2] }}</span>
+                    <span class="text-gray-300 truncate w-1/3 text-right">{{ l[3] }}</span>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <div v-if="userModal.show" class="fixed inset-0 bg-black/80 flex justify-center items-center z-50">
+           <div class="glass-panel p-8 rounded-2xl w-full max-w-md slide-up">
+              <h3 class="text-xl font-bold mb-4">{{ userModal.type==='create'?'Add New User':'Edit User' }}</h3>
+              <div class="space-y-4">
+                 <input v-model="userModal.data.name" placeholder="Name" class="glass-input w-full p-3 rounded-xl">
+                 <input v-model="userModal.data.email" placeholder="Email" class="glass-input w-full p-3 rounded-xl" :disabled="userModal.type==='edit'">
+                 <input v-model="userModal.data.password" placeholder="Password" class="glass-input w-full p-3 rounded-xl">
+                 <div class="grid grid-cols-2 gap-4">
+                    <select v-model="userModal.data.role" class="glass-input w-full p-3 rounded-xl"><option>Manager</option><option>Admin</option></select>
+                    <select v-model="userModal.data.status" class="glass-input w-full p-3 rounded-xl"><option>Active</option><option>Blocked</option><option>Pending</option></select>
+                 </div>
+                 <div class="flex gap-4 mt-6">
+                    <button @click="userModal.show=false" class="flex-1 p-3 border border-gray-600 rounded-xl">Cancel</button>
+                    <button @click="saveUser" class="flex-1 p-3 btn-gradient rounded-xl font-bold">Save</button>
+                 </div>
+              </div>
+           </div>
+        </div>
 
       </main>
     </div>
   </div>
 
   <script>
-    /** CONFIG */
-    const API_URL = "https://calm-mud-e3f8.clickworld.workers.dev"; 
+    /** ⚙️ CONFIG: Paste Worker URL Here */
+    const API_URL = "https://calm-mud-e3f8.clickworld.workers.dev";
 
     const { createApp } = Vue;
     createApp({
       data() {
         return {
-          loading: false, notification: null, currentPage: 'login', currentView: 'explorer', authMode: 'login',
-          authForm: { name: '', email: '', password: '' }, user: null, searchQuery: '', searchFilter: 'all', showSuggestions: false,
-          dbData: { locations: [], files: [], stats: { totalFiles:0, activeFiles:0 } },
-          fileForm: { category: 'File', type: 'Pink File', fileNo: '', fileNameText: '', location: '', pageCount: 0, status: 'Active', fileData: null, mimeType: null, fileName: null, desc: '' },
-          adminUsers: [], newLoc: { name: '', row: '', col: '' },
-          showUserModal: false, newUserForm: { name: '', email: '', password: '', role: 'Manager' }
+          loading: false, notify: null, page: 'login', view: 'explorer', authMode: 'login',
+          search: '', showSugg: false,
+          authForm: { name: '', email: '', password: '' }, user: null,
+          db: { files: [], locations: [], logs: [], stats: { total:0, active:0 } },
+          form: {}, // File Form
+          adminUsers: [],
+          userModal: { show: false, type: 'create', data: {} }
         }
       },
       computed: {
         filteredFiles() {
-          if (!this.dbData.files) return [];
-          return this.dbData.files.filter(f => {
-            const q = this.searchQuery.toLowerCase();
-            const matchesSearch = (f.Name || '').toLowerCase().includes(q) || (f.FileNo || '').toLowerCase().includes(q) || (f.Description || '').toLowerCase().includes(q);
-            const matchesType = this.searchFilter === 'all' || f.Type === this.searchFilter;
-            return matchesSearch && matchesType && f.Category !== 'Sub-File';
-          });
+          const q = this.search.toLowerCase();
+          return this.db.files.filter(f => !f.ParentFileID && (f.Name.toLowerCase().includes(q) || f.FileNo.toLowerCase().includes(q)));
         }
       },
       methods: {
-        async apiCall(action, payload = {}) {
-          this.loading = true;
+        async api(action, payload={}) {
+          this.loading=true;
           try {
-            const response = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, payload }) });
-            const data = await response.json(); this.loading = false; return data;
-          } catch (e) { this.loading = false; this.showNotify("Connection Error", 'error'); return { success: false }; }
+             const res = await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action, payload}) });
+             const data = await res.json(); this.loading=false; return data;
+          } catch(e) { this.loading=false; this.toast(e.message, 'error'); return {success:false}; }
         },
-        async handleAuth() {
-          const payload = this.authMode === 'signup' ? { name: this.authForm.name, email: this.authForm.email, password: this.authForm.password } : { email: this.authForm.email, password: this.authForm.password };
-          if(this.authMode === 'signup') {
-             const signRes = await this.apiCall('signup', payload);
-             if(signRes.success) { this.showNotify('Requested! Wait for Approval.', 'success'); this.authMode = 'login'; } else this.showNotify('Error signing up', 'error');
-          } else {
-             const res = await this.apiCall('login', payload);
-             if (res.success) { this.user = res.user; this.currentPage = 'dashboard'; this.loadDashboardData(); } else { this.showNotify(res.message, 'error'); }
-          }
+        async auth() {
+           const res = await this.api(this.authMode, this.authForm);
+           if(res.success) {
+              if(this.authMode==='login') { this.user = res.user; this.page='app'; this.loadDB(); }
+              else { this.toast('Request Sent', 'success'); this.authMode='login'; }
+           } else this.toast(res.message, 'error');
         },
-        async loadDashboardData() { const res = await this.apiCall('getDashboard'); if(res.success) this.dbData = res.data; },
-        async submitFile() {
-          const res = await this.apiCall('createFile', { form: this.fileForm, user: this.user });
-          if(res.success) { this.showNotify('File Saved!', 'success'); this.fileForm = { category: 'File', type: 'Pink File', fileNo: '', fileNameText: '', location: '', pageCount: 0, status: 'Active', fileData:null, fileName:null, desc: '' }; this.loadDashboardData(); this.currentView = 'explorer'; } else this.showNotify('Save Failed', 'error');
+        async loadDB() {
+           const res = await this.api('getDashboard', {role: this.user.role});
+           if(res.success) this.db = res.data;
         },
-        handleFileUpload(e) { const f = e.target.files[0]; if(f) { const r = new FileReader(); r.onload=(ev)=>{ this.fileForm.fileData=ev.target.result.split(',')[1]; this.fileForm.mimeType=f.type; this.fileForm.fileName=f.name; }; r.readAsDataURL(f); } },
-        getFileColorClass(t) { return t === 'Pink File' ? 'type-Pink' : t === 'Brown File' ? 'type-Brown' : t === 'Register' ? 'type-Register' : t === 'White Backing' ? 'type-White' : 'type-Custom'; },
-        expandFile(f) { f.expanded = !f.expanded; },
-        getSubFiles(pid) { return this.dbData.files.filter(f => f.ParentFileID === pid); },
-        prepareAddSubFile(p) { this.fileForm.category = 'Sub-File'; this.fileForm.parentFileId = p.FileID; this.fileForm.location = p.Location; this.currentView='create'; },
-        logout() { this.user = null; this.currentPage = 'login'; },
-        showNotify(m, t) { this.notification = { message: m, type: t }; setTimeout(() => this.notification = null, 4000); },
-        async fetchAdminData() { this.currentView = 'admin'; const res = await this.apiCall('getUsers'); if(res.success) this.adminUsers = res.data; },
-        async changeUserStatus(idx, status) { await this.apiCall('updateUserStatus', { rowIndex: idx, status: status }); this.fetchAdminData(); },
-        async addLocation() { await this.apiCall('addLocation', this.newLoc); this.showNotify('Added!', 'success'); this.loadDashboardData(); },
+        // FILE ACTIONS
+        initCreate(parent) {
+           this.form = { category: parent?'Sub-File':'File', type: 'Pink File', status: 'Active', parentFileId: parent?parent.FileID:'' };
+           this.view = 'create';
+        },
+        editFile(f) {
+           this.form = {...f}; // Clone data
+           this.view = 'edit';
+        },
+        async saveFile() {
+           const action = this.view === 'create' ? 'createFile' : 'editFile';
+           const res = await this.api(action, { form: this.form, user: this.user, rowIndex: this.form.rowIndex });
+           if(res.success) { this.toast('Saved Successfully', 'success'); this.loadDB(); this.view='explorer'; }
+        },
+        async deleteFile(f) {
+           if(!confirm('Delete this file?')) return;
+           const res = await this.api('deleteFile', { rowIndex: f.rowIndex, fileId: f.FileID, user: this.user });
+           if(res.success) { this.toast('Deleted', 'success'); this.loadDB(); }
+        },
+        upload(e) { const f=e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{this.form.fileData=ev.target.result.split(',')[1]; this.form.mimeType=f.type; this.form.fileName=f.name;}; r.readAsDataURL(f);} },
         
-        // --- NEW SEARCH SUGGESTION LOGIC ---
-        selectSuggestion(file) {
-           this.searchQuery = file.Name;
-           this.showSuggestions = false;
-           this.expandFile(file); // Auto Expand
-           file.highlight = true; setTimeout(() => file.highlight = false, 2000); // Highlight effect
-           // Optional: Scroll to element logic could go here
+        // ADMIN ACTIONS
+        async fetchAdmin() { this.view='admin'; const res = await this.api('getUsers'); if(res.success) this.adminUsers = res.data; },
+        openUserModal(type, u) { this.userModal = { show:true, type, data: type==='create'?{role:'Manager', status:'Active'}:{...u} }; },
+        async saveUser() {
+           const res = await this.api('manageUser', { type: this.userModal.type, data: this.userModal.data });
+           if(res.success) { this.toast('User Saved', 'success'); this.userModal.show=false; this.fetchAdmin(); }
         },
-
-        // --- NEW ADMIN CREATE USER LOGIC ---
-        async createAdminUser() {
-           const res = await this.apiCall('adminCreateUser', this.newUserForm);
-           if (res.success) {
-              this.showNotify('User Created Successfully!', 'success');
-              this.showUserModal = false;
-              this.newUserForm = { name: '', email: '', password: '', role: 'Manager' };
-              this.fetchAdminData();
-           } else {
-              this.showNotify(res.message, 'error');
-           }
-        }
+        async deleteUser(u) {
+           if(!confirm('Delete this user?')) return;
+           const res = await this.api('manageUser', { type: 'delete', rowIndex: u.rowIndex });
+           if(res.success) { this.toast('User Deleted', 'success'); this.fetchAdmin(); }
+        },
+        
+        // HELPERS
+        subFiles(pid) { return this.db.files.filter(f => f.ParentFileID === pid); },
+        openFile(f) { this.search=''; this.view='explorer'; f.expand=true; setTimeout(()=>document.getElementById('file-'+f.FileID)?.scrollIntoView({behavior:'smooth'}), 100); },
+        getColor(t) { return t==='Pink File'?'border-pink-500': t==='Brown File'?'border-amber-600': 'border-blue-400'; },
+        toast(msg, type) { this.notify={msg, type}; setTimeout(()=>this.notify=null, 3000); }
       }
     }).mount('#app');
   </script>
